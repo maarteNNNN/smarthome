@@ -8,6 +8,8 @@ const morgan = require('morgan')
 const uuid = require('uuid')
 const sccBrokerClient = require('scc-broker-client')
 
+const pins = require('./pins')
+
 const ENVIRONMENT = process.env.ENV || 'dev'
 const SOCKETCLUSTER_PORT = process.env.SOCKETCLUSTER_PORT || 8000
 const SOCKETCLUSTER_WS_ENGINE = process.env.SOCKETCLUSTER_WS_ENGINE || 'ws'
@@ -69,6 +71,17 @@ expressApp.get('/health-check', (req, res) => {
   for await (let { socket } of agServer.listener('connection')) {
     // Handle socket connection.
     console.log(`${socket.id} is connected to the server`)
+
+    for (let i = 0; i < pins.length; i++) {
+      const pin = pins[i];
+
+      if(pin.programmable) {
+        for await (const request of socket.procedure(pin.name)) {
+          console.log(request.data)
+        }
+      }
+
+    }
   }
 })()
 
