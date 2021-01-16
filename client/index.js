@@ -16,7 +16,7 @@ var gpio7 = gpio.export(7, {
   },
 })
 
-gpio4.on("change", function(val) {
+gpio7.on("change", function(val) {
   // value will report either 1 or 0 (number) when the value changes
   console.log(val)
   socket.invoke(pins[7 - 1].name, { data: val })
